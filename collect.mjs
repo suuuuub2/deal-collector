@@ -69,7 +69,15 @@ if (process.env.DRY_RUN) {
   });
   const body = await res.text();
   console.log(`[collect] ingest st=${res.status} ${body.slice(0, 200)}`);
-  if (!res.ok) { console.log(`::error title=워커 전달 실패::HTTP ${res.status} ${body.slice(0, 200)}`); process.exitCode = 1; }
+  let parsed = null;
+  try { parsed = JSON.parse(body); } catch (e) { /* JSON 아님 */ }
+  // 워커에 /api/ingest가 없으면 다른 경로 응답(200)이 올 수 있어서 received 필드까지 확인
+  if (!res.ok || !parsed || typeof parsed.received !== "number") {
+    console.log(`::error title=워커 전달 실패::HTTP ${res.status} ${body.slice(0, 200)}`);
+    process.exitCode = 1;
+  } else {
+    console.log(`::notice title=수집 결과::보냄 ${all.length}건, 워커 새로 받음 ${parsed.added}건, 큐 ${parsed.queue}건${failed.length ? `, 실패: ${failed.join(",")}` : ""}`);
+  }
 }
 
 // 모든 피드가 실패하면 실행을 실패로 표시(GitHub 알림·Actions 화면에서 바로 보이게)
