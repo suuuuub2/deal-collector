@@ -46,9 +46,11 @@ async function fetchFeed(feed) {
 
 const all = [];
 const failed = [];
+const perFeed = [];
 for (const feed of FEEDS) {
   try {
     const deals = await fetchFeed(feed);
+    perFeed.push({ name: feed.name, items: deals });
     console.log(`[collect] ${feed.name} ok items=${deals.length} img=${deals.filter((d) => d.img).length}`);
     all.push(...deals);
   } catch (e) {
@@ -58,7 +60,8 @@ for (const feed of FEEDS) {
 }
 
 if (process.env.DRY_RUN) {
-  console.log(JSON.stringify(all.slice(0, 3), null, 2));
+  if (process.env.FEEDS_OUT) (await import("node:fs")).writeFileSync(process.env.FEEDS_OUT, JSON.stringify(perFeed));
+  else console.log(JSON.stringify(all.slice(0, 3), null, 2));
 } else if (all.length) {
   if (!process.env.INGEST_TOKEN) throw new Error("INGEST_TOKEN 비밀이 없어요");
   const res = await fetch(INGEST_URL, {

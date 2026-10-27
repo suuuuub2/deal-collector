@@ -12,9 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
+      - uses: actions/checkout@v5
       - name: Count RSS deals in live list
         run: |
           curl -sS -m 30 https://deal-or-land-pages.pages.dev/deal-proxy/ -o deals.json
+          DRY_RUN=1 FEEDS_OUT=feeds.json node collect.mjs
           node -e '
             const d = JSON.parse(require("fs").readFileSync("deals.json","utf8"));
             const rss = d.filter((x) => x.via === "rss");
@@ -22,5 +24,13 @@ jobs:
             const aliased = d.filter((x) => (x.aliasRefs || []).length).length;
             const img = rss.filter((x) => x.img).length;
             const last = rss.slice(0, 3).map((x) => x.source + " " + x.title.slice(0, 30)).join(" / ");
+            const canon = (u) => { try { const x = new URL(u); const h = x.hostname.replace(/^(www|m)\./, "");
+              if (h.endsWith("ppomppu.co.kr") && x.searchParams.get("no")) return "pp:" + x.searchParams.get("id") + ":" + x.searchParams.get("no");
+              const m = x.pathname.match(/\/board\/(\d+)\/read\/(\d+)/); if (h.endsWith("ruliweb.com") && m) return "ru:" + m[1] + ":" + m[2]; return h + x.pathname; } catch (e) { return ""; } };
+            const live = new Set(d.map((x) => canon(x.link)));
+            const srcCount = {}; for (const x of d) srcCount[x.source] = (srcCount[x.source] || 0) + 1;
+            const feeds = JSON.parse(require("fs").readFileSync("feeds.json", "utf8"));
+            for (const f of feeds) console.log(`::notice title=${f.name}::RSS ${f.items.length}건 중 목록에 이미 있음 ${f.items.filter((i) => live.has(canon(i.link))).length}건, 3시간 이내 글 ${f.items.filter((i) => Date.now() - new Date(i.postedAt) < 3*3600e3).length}건`);
+            console.log(`::notice title=출처별::${JSON.stringify(srcCount)}`);
             console.log(`::notice title=점검::전체 ${d.length}건, 수집기 딜 ${rss.length}건 ${JSON.stringify(by)}, 썸네일 ${img}건, aagag와 겹쳐 합쳐진 글 ${aliased}건 | 최근: ${last}`);
           '
