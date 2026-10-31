@@ -11,11 +11,11 @@ const get = async (u) => {
 };
 for (const u of ["https://www.ppomppu.co.kr/robots.txt", "https://www.fmkorea.com/robots.txt"]) {
   const r = await get(u);
-  console.log(`\n## ${u} st=${r.st} ${r.err || ""}\n${r.html.slice(0, 1500)}`);
+  console.log(`\n## ${u} st=${r.st} ${r.err || ""}\n${u.includes("fmkorea") ? r.html.slice(1400, 4500) : ""}`);
 }
 const rss = await get("https://www.ppomppu.co.kr/rss.php?id=ppomppu");
 const link = ((rss.html.match(/<link>(http[^<]*view\.php[^<]*)<\/link>/) || [])[1] || "").replace(/&amp;/g, "&");
-const p = await get(link);
+const p = await get(link.replace(/^http:\/\//, "https://"));
 const h = p.html;
 console.log(`\n## post ${link} st=${p.st} ct=${p.ct} len=${h.length} fin=${p.fin}`);
 console.log("title:", (h.match(/<title>([^<]*)/i) || [])[1]);
@@ -23,7 +23,7 @@ console.log("og/meta:", [...h.matchAll(/<meta[^>]+(?:og:|twitter:)[^>]*>/gi)].ma
 const hrefs = [...new Set([...h.matchAll(/href=["']([^"']+)["']/gi)].map((m) => m[1].replace(/&amp;/g, "&")))];
 console.log("hrefs total:", hrefs.length);
 console.log("candidates:", hrefs.filter((u) => /s\.ppomppu|target=|link\.php|outlink|gmarket|coupang|11st|auction|lotteon|ssg|naver|aliexpress|coupa\.ng/i.test(u)).slice(0, 10));
-for (const kw of ["scrap_url", "wordfix", "원문", "링크", "<img"]) {
+for (const kw of ["redirect.php", "s.ppomppu", "scrap_url", "wordfix", "링크:", "og:image"]) {
   const i = h.indexOf(kw);
   if (i >= 0) console.log(`\n[${kw}] ...${h.slice(Math.max(0, i - 150), i + 350).replace(/\s+/g, " ")}`);
 }
