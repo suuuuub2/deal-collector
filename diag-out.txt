@@ -1,31 +1,85 @@
-st 200 text/xml; charset=UTF-8
 
-----
-<item>
-<title>[G마켓]K2 남여공용 씬에어 롱패딩 헤비다운 (198,480원/무료배송)</title>
-<link>http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&amp;no=744583</link>
-<description>25년 신상인데 얼마전에&amp;nbsp; 봤을때보다 2만원 더 내려갔네요기본핏이라 가장 인기 많은 제품입니다제작년껀 10만초중반대까지 봤는데 사이즈가 없어요모자는 깃에 히든되있고 코트형...</description>
-<author>yj4625</author>
-<pubDate>Sat, 31 Oct 2026 12:24:44 GMT</pubDate>
-<hits> [0|594|0|0]</hits>
-</item>
+## https://www.ppomppu.co.kr/robots.txt st=200 
+User-agent: *
+Allow: /zboard/
+Disallow: /include/
+Disallow: /zboard/view.php?id=my
+Disallow: /search_bbs.php
+Disallow: /zboard/view_info2.php
+Disallow: /bookmark/
+Disallow: /openapi/
+Disallow: /redirect.php
 
-----
-<item>
-<title>[롯데온] 아메리칸투어리스터 기내용20인치 캐리어 (55,980원/무료)</title>
-<link>http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&amp;no=744582</link>
-<description>여기꺼 as 잘되서 좋더라구요20인치 기내용 캐리어고 5.5만대 나옵니다</description>
-<author>티티노</author>
-<pubDate>Sat, 31 Oct 2026 12:19:30 GMT</pubDate>
-<hits> [0|771|0|0]</hits>
-</item>
+Sitemap: https://www.ppomppu.co.kr/sitemap.php
 
-----
-<item>
-<title>[G마켓]노지감귤 10kg 로얄과(10,880/무료)</title>
-<link>http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&amp;no=744581</link>
-<description>노지감귤 10kg 저렴하네요15% 쿠폰 있으신분은 10,880원10% 쿠폰 적용시 11,520원그외 쿠폰 적용시 11,910원지마켓 15%쿠폰 사용하신분은 옥션에서 구매하세요</description>
-<author>스위트홈4</author>
-<pubDate>Sat, 31 Oct 2026 12:17:55 GMT</pubDate>
-<hits> [0|396|1|0]</hits>
-</item>
+## https://www.fmkorea.com/robots.txt st=200 
+##############################
+# 0) Disallowed bots
+# Allow only main page
+##############################
+User-agent: AhrefsBot
+User-agent: AI2Bot
+User-agent: Ai2Bot-Dolma
+User-agent: Amazonbot
+User-agent: anthropic-ai
+User-agent: Applebot-Extended
+User-agent: BLEXBot
+User-agent: BoardReader
+User-agent: Bytespider
+User-agent: CCBot
+User-agent: ClaudeBot
+User-agent: cohere-ai
+User-agent: cohere-training-data-crawler
+User-agent: DeepSeek
+User-agent: DeepSeekBot
+User-agent: Diffbot
+User-agent: dotbot
+User-Agent: FacebookBot
+User-agent: Google-Extended
+User-agent: GPTBot
+User-agent: ia_archiver
+User-agent: ICCrawler
+User-agent: ImagesiftBot
+User-agent: Linguee Bot
+User-agent: Meta-ExternalAgent
+User-Agent: MJ12bot
+User-agent: Omgili
+User-agent: Omgilibot
+User-agent: PerplexityBot
+User-agent: PetalBot
+User-Agent: SemrushBot
+User-agent: Sogou inst spider
+User-agent: Sogou web spider
+User-Agent: The Knowledge AI
+User-Agent: trendictionbot
+User-agent: TurnitinBot
+User-agent: Tweetmemebot
+User-agent: YouBot
+User-agent: webzio
+User-agent: Webzio-Extended
+Disallow: /
+Allow: /$
+
+##############################
+# 1A) Bots with unrestricted access to all pages
+# Allow ALL pages (overrides generic rules)
+##############################
+User-agent: AmazonAdBot
+User-agent: facebookexternalhit
+User-agent: ChatGPT-User
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+User-agent: OAI-SearchBot
+User-agent: Perplexity-User
+User-agent: Mediapartners-Google
+User-agent: Twitterbot
+Allow: /
+Disallow
+
+## post http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=744584 st=200 ct=text/html; charset=euc-kr len=105 fin=http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=744584
+title: undefined
+og/meta: []
+hrefs total: 1
+candidates: []
+
+BODY: <script>document.location.href='https://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=744584';</script>
