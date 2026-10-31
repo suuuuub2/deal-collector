@@ -1,0 +1,51 @@
+
+=== ppomppu: 전체 15, 이미지없음 15
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=744583
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=744582
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=744581
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=744580
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=744579
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=744578
+
+=== ppomppu4: 전체 15, 이미지없음 15
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu4&no=126938
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu4&no=126937
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu4&no=126935
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu4&no=126934
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu4&no=126933
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu4&no=126931
+
+=== ppomppu8: 전체 15, 이미지없음 15
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu8&no=103360
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu8&no=103359
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu8&no=103358
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu8&no=103357
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu8&no=103356
+- post st=200 postOg=N ext=0 http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu8&no=103355
+
+=== ruliweb: 전체 28, 이미지없음 5
+- post st=200 postOg=N ext=3 https://bbs.ruliweb.com/market/board/1020/read/108551
+    mall st=200 fin=eapp.emart.com og=https://eapp-cdn.emart.com/digitalgrab/item/4948872417068/787d00e8-cc8f-473a-8668-53d1c8d1  <- https://emart.kr/a/l0sceK
+    mall st=200 fin=dajooda.com og=https://media.dajooda.com/media/1200.630.png  <- https://dajooda.com/s/MbS7q1e
+- post st=200 postOg=N ext=2 https://bbs.ruliweb.com/market/board/1020/read/108546
+    mall st=200 fin=dajooda.com og=https://media.dajooda.com/media/1200.630.png  <- https://dajooda.com/s/MbS7q1e
+    mall st=200 fin=www.kr.playblackdesert.com og=https://s1.pearlcdn.com/KR/Upload/Manager/MetaTag/c75a1df78ce20260902062248011.jpg?v=63928  <- https://www.kr.playblackdesert.com/ko-KR/intro/hyperboost?ADcampaign=hyperboost&ADSource=ruliweb_text_none&ADT
+- post st=200 postOg=N ext=2 https://bbs.ruliweb.com/market/board/1020/read/108534
+    mall st=200 fin=dajooda.com og=https://media.dajooda.com/media/1200.630.png  <- https://dajooda.com/s/MbS7q1e
+    mall st=200 fin=www.kr.playblackdesert.com og=https://s1.pearlcdn.com/KR/Upload/Manager/MetaTag/c75a1df78ce20260902062248011.jpg?v=63928  <- https://www.kr.playblackdesert.com/ko-KR/intro/hyperboost?ADcampaign=hyperboost&ADSource=ruliweb_text_none&ADT
+- post st=200 postOg=N ext=4 https://bbs.ruliweb.com/market/board/1020/read/108529
+    mall st=200 fin=point.pay.naver.com og=https://financial.pstatic.net/static/images/paypet/paypet_point_wide.png  <- https://ofw.adison.co/u/naverpay/ads/730013
+    mall st=200 fin=point.pay.naver.com og=https://financial.pstatic.net/static/images/paypet/paypet_point_wide.png  <- https://ofw.adison.co/u/naverpay/ads/67823
+- post st=200 postOg=N ext=5 https://bbs.ruliweb.com/market/board/1020/read/108522
+    mall st=429 fin=smartstore.naver.com og=N  <- https://naver.me/xxonrtGO
+    mall st=429 fin=smartstore.naver.com og=N  <- https://naver.me/5vJULTbf
+
+=== clien: 전체 31, 이미지없음 2
+- post st=200 postOg=N ext=2 https://www.clien.net/service/board/jirum/19284292
+    mall st=200 fin=www.aliexpress.com og=https://ae-pic-a1.aliexpress-media.com/kf/HTB18eCBQXXXXXXfXXXX760XFXXXa.png  <- https://s.click.aliexpress.com/e/_c4e8VDZD
+    mall st=200 fin=www.aliexpress.com og=https://ae-pic-a1.aliexpress-media.com/kf/HTB18eCBQXXXXXXfXXXX760XFXXXa.png  <- https://s.click.aliexpress.com/e/_c3JpTGNd
+- post st=200 postOg=N ext=2 https://www.clien.net/service/board/jirum/19284292
+    mall st=200 fin=www.aliexpress.com og=https://ae-pic-a1.aliexpress-media.com/kf/HTB18eCBQXXXXXXfXXXX760XFXXXa.png  <- https://s.click.aliexpress.com/e/_c4e8VDZD
+    mall st=200 fin=www.aliexpress.com og=https://ae-pic-a1.aliexpress-media.com/kf/HTB18eCBQXXXXXXfXXXX760XFXXXa.png  <- https://s.click.aliexpress.com/e/_c3JpTGNd
+
+=== dealbada: 전체 15, 이미지없음 0
