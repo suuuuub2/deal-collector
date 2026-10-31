@@ -1,0 +1,16 @@
+name: diag-thumb
+on:
+  push:
+    branches: [diag-thumb]
+permissions:
+  contents: read
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: '22' }
+      - run: DRY_RUN=1 FEEDS_OUT=feeds.json node collect.mjs
+      - run: node diag.mjs
