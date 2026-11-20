@@ -240,7 +240,8 @@ async function searchFill(already) {
       const isMallDoc = (x) => { try { return hostIn(new URL(x.doc_url).hostname, MALL_HOSTS); } catch { return false; } };
       const pick = docs.find(isMallDoc) || docs[0];
       const img = pick && [pick.thumbnail_url, pick.image_url].find((v) => /^https:\/\//.test(v || "") && v.length <= 500);
-      if (!img) { miss++; continue; }
+      if (!img) { miss++; console.log(`[search] 없음 "${q}" (결과 ${docs.length}건)`); continue; }
+      console.log(`[search] "${q}" → ${isMallDoc(pick) ? "쇼핑몰" : "일반"} ${pick.display_sitename || ""} ${img.slice(0, 90)}`);
       items.push({ title: d.title, link: d.link, source: d.source || "", img, imgOnly: true, imgFrom: "search" });
     } catch (e) { miss++; }
     await new Promise((r) => setTimeout(r, 200));
