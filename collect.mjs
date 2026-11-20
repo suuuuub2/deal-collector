@@ -196,7 +196,61 @@ async function thumbFill() {
   console.log(`[thumb] 대상 ${targets.length}건, 이미지 ${items.length}건`);
   return items;
 }
-all.push(...(await thumbFill()));
+// ── 제목 이미지 검색(R1, 2026-11-20 Silve): 글에서 이미지를 못 얻는 딜(뽐뿌·펨코 등)을 카카오(Daum) 이미지 검색 API로 채운다 ──
+// 비밀 KAKAO_REST_KEY가 없으면 건너뜀. 실행당 최대 20건, 딜마다 시도 구간을 두어 같은 딜을 여러 번 찾지 않게 한다.
+// 뽐뿌·펨코는 다른 방법이 없어 바로(0~40분), 그 밖은 워커·글 이미지가 먼저 붙을 시간을 주고 20~60분 사이에만.
+const SEARCH_PER_RUN = 20;
+const NO_POST_IMG_HOSTS = ["ppomppu.co.kr", "fmkorea.com"];
+function searchQuery(title) {
+  return String(title || "")
+    .replace(/^\s*\[[^\]]{1,12}\]\s*/, "")                 // [쇼핑몰]
+    .replace(/\([^)]*\)|\[[^\]]*\]|\{[^}]*\}/g, " ")          // 괄호 속 가격·배송·옵션
+    .replace(/\d{1,3}(?:,\d{3})+\s*원?|\d+\s*원/g, " ")       // 가격
+    .replace(/무료\s*배송|무배|무료|배송비\s*\S*|택배비?|카드\s*할인|쿠폰|최저가|역대가|특가|핫딜|품절|종료|\/|~|\+|!|\?/g, " ")
+    .replace(/\s+/g, " ").trim().slice(0, 40);
+}
+async function searchFill(already) {
+  const key = process.env.KAKAO_REST_KEY;
+  if (!key) { console.log("[search] KAKAO_REST_KEY 없음 — 건너뜀"); return []; }
+  let list = [];
+  try {
+    const r = await fetch(LIST_URL, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(15000) });
+    const j = await r.json(); list = Array.isArray(j) ? j : (j.deals || []);
+  } catch (e) { console.log(`::warning title=이미지 검색::딜 목록을 못 받음 ${String(e.message || e)}`); return []; }
+  const now = Date.now();
+  const targets = list.filter((d) => {
+    if (d.img || !d.link || !d.title || already.has(d.link)) return false;
+    let host = ""; try { host = new URL(d.link).hostname; } catch { return false; }
+    const age = (now - new Date(d.scrapedAt || 0).getTime()) / 60000;
+    return hostIn(host, NO_POST_IMG_HOSTS) ? age >= 0 && age < 40 : age >= 20 && age < 60;
+  }).slice(0, SEARCH_PER_RUN);
+  const items = []; let calls = 0, miss = 0;
+  for (const d of targets) {
+    const q = searchQuery(d.title);
+    if (q.replace(/\s/g, "").length < 4) { miss++; continue; }
+    try {
+      const url = "https://dapi.kakao.com/v2/search/image?" + new URLSearchParams({ query: q, sort: "accuracy", size: "10" });
+      const r = await fetch(url, { headers: { Authorization: `KakaoAK ${key}` }, signal: AbortSignal.timeout(8000) });
+      calls++;
+      if (r.status === 401 || r.status === 403) { console.log(`::warning title=이미지 검색::카카오 키 거부 HTTP ${r.status}`); break; }
+      if (r.status === 429) { console.log("::warning title=이미지 검색::카카오 쿼터 초과 — 이번 실행 중단"); break; }
+      if (!r.ok) { miss++; continue; }
+      const docs = ((await r.json()).documents || []).filter((x) => (x.width || 0) >= 200 && (x.height || 0) >= 200 && x.width / x.height < 2.2 && x.height / x.width < 2.2);
+      // 쇼핑몰 문서에서 나온 이미지를 먼저, 없으면 정확도 순 첫 결과
+      const isMallDoc = (x) => { try { return hostIn(new URL(x.doc_url).hostname, MALL_HOSTS); } catch { return false; } };
+      const pick = docs.find(isMallDoc) || docs[0];
+      const img = pick && [pick.thumbnail_url, pick.image_url].find((v) => /^https:\/\//.test(v || "") && v.length <= 500);
+      if (!img) { miss++; continue; }
+      items.push({ title: d.title, link: d.link, source: d.source || "", img, imgOnly: true, imgFrom: "search" });
+    } catch (e) { miss++; }
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  console.log(`[search] 대상 ${targets.length}건, 호출 ${calls}회, 이미지 ${items.length}건, 못 찾음 ${miss}건`);
+  return items;
+}
+const filled = await thumbFill();
+all.push(...filled);
+all.push(...(await searchFill(new Set(filled.map((x) => x.link)))));
 
 if (process.env.DRY_RUN) {
   if (process.env.FEEDS_OUT) (await import("node:fs")).writeFileSync(process.env.FEEDS_OUT, JSON.stringify(perFeed));
