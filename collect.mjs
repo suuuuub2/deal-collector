@@ -199,13 +199,14 @@ async function thumbFill() {
 // ── 제목 이미지 검색(R1, 2026-11-20 Silve): 글에서 이미지를 못 얻는 딜(뽐뿌·펨코 등)을 카카오(Daum) 이미지 검색 API로 채운다 ──
 // 비밀 KAKAO_REST_KEY가 없으면 건너뜀. 실행당 최대 20건, 딜마다 시도 구간을 두어 같은 딜을 여러 번 찾지 않게 한다.
 // 뽐뿌·펨코는 다른 방법이 없어 바로(0~40분), 그 밖은 워커·글 이미지가 먼저 붙을 시간을 주고 20~60분 사이에만.
-const SEARCH_PER_RUN = 20;
+const SEARCH_PER_RUN = 20; // 딜당 호출 최대 2번(긴 검색어 0건이면 짧게) → 실행당 최대 40회
 const NO_POST_IMG_HOSTS = ["ppomppu.co.kr", "fmkorea.com"];
 function searchQuery(title) {
   return String(title || "")
     .replace(/^\s*\[[^\]]{1,12}\]\s*/, "")                 // [쇼핑몰]
     .replace(/\([^)]*\)|\[[^\]]*\]|\{[^}]*\}/g, " ")          // 괄호 속 가격·배송·옵션
     .replace(/\d{1,3}(?:,\d{3})+\s*원?|\d+\s*원/g, " ")       // 가격
+    .replace(/^(블프|블랙프라이데이|광군제|직배|직구|무관세)\s*\)?\s*/g, " ")
     .replace(/무료\s*배송|무배|무료|배송비\s*\S*|택배비?|카드\s*할인|쿠폰|최저가|역대가|특가|핫딜|품절|종료|\/|~|\+|!|\?/g, " ")
     .replace(/\s+/g, " ").trim().slice(0, 40);
 }
@@ -224,24 +225,34 @@ async function searchFill(already) {
     const age = (now - new Date(d.scrapedAt || 0).getTime()) / 60000;
     return hostIn(host, NO_POST_IMG_HOSTS) ? age >= 0 && age < 40 : age >= 20 && age < 60;
   }).slice(0, SEARCH_PER_RUN);
-  const items = []; let calls = 0, miss = 0;
+  const items = []; let calls = 0, miss = 0, stop = false;
   for (const d of targets) {
     const q = searchQuery(d.title);
     if (q.replace(/\s/g, "").length < 4) { miss++; continue; }
     try {
-      const url = "https://dapi.kakao.com/v2/search/image?" + new URLSearchParams({ query: q, sort: "accuracy", size: "10" });
-      const r = await fetch(url, { headers: { Authorization: `KakaoAK ${key}` }, signal: AbortSignal.timeout(8000) });
-      calls++;
-      if (r.status === 401 || r.status === 403) { console.log(`::warning title=이미지 검색::카카오 키 거부 HTTP ${r.status}`); break; }
-      if (r.status === 429) { console.log("::warning title=이미지 검색::카카오 쿼터 초과 — 이번 실행 중단"); break; }
-      if (!r.ok) { miss++; continue; }
-      const docs = ((await r.json()).documents || []).filter((x) => (x.width || 0) >= 200 && (x.height || 0) >= 200 && x.width / x.height < 2.2 && x.height / x.width < 2.2);
-      // 쇼핑몰 문서에서 나온 이미지를 먼저, 없으면 정확도 순 첫 결과
-      const isMallDoc = (x) => { try { return hostIn(new URL(x.doc_url).hostname, MALL_HOSTS); } catch { return false; } };
+      // 결과 0건이면 짧은 검색어로 한 번 더(앞 3단어, 숫자·단위 덩어리 뺌) — 11-20 첫 실행에서 못 찾은 10건이 모두 긴 검색어 0건
+      const short = q.split(" ").filter((w) => !/^\d|^\d*(kg|g|ml|l|개|팩|입|병|매|롤|ea)$/i.test(w) && w.length > 1).slice(0, 3).join(" ");
+      let docs = null, used = q;
+      for (const qq of [q, short]) {
+        if (!qq || (docs && qq === used) || qq.replace(/\s/g, "").length < 4) continue;
+        const url = "https://dapi.kakao.com/v2/search/image?" + new URLSearchParams({ query: qq, sort: "accuracy", size: "10" });
+        const r = await fetch(url, { headers: { Authorization: `KakaoAK ${key}` }, signal: AbortSignal.timeout(8000) });
+        calls++;
+        if (r.status === 401 || r.status === 403) { console.log(`::warning title=이미지 검색::카카오 키 거부 HTTP ${r.status}`); stop = true; break; }
+        if (r.status === 429) { console.log("::warning title=이미지 검색::카카오 쿼터 초과 — 이번 실행 중단"); stop = true; break; }
+        if (!r.ok) break;
+        used = qq;
+        docs = ((await r.json()).documents || []).filter((x) => (x.width || 0) >= 200 && (x.height || 0) >= 200 && x.width / x.height < 2.2 && x.height / x.width < 2.2);
+        if (docs.length) break;
+      }
+      if (stop) break;
+      docs = docs || [];
+      // 쇼핑몰(쇼핑하우 포함) 문서에서 나온 이미지를 먼저, 없으면 정확도 순 첫 결과
+      const isMallDoc = (x) => { try { return hostIn(new URL(x.doc_url).hostname, [...MALL_HOSTS, "shoppinghow.kakao.com"]) || /쇼핑하우/.test(x.display_sitename || ""); } catch { return false; } };
       const pick = docs.find(isMallDoc) || docs[0];
       const img = pick && [pick.thumbnail_url, pick.image_url].find((v) => /^https:\/\//.test(v || "") && v.length <= 500);
-      if (!img) { miss++; console.log(`[search] 없음 "${q}" (결과 ${docs.length}건)`); continue; }
-      console.log(`[search] "${q}" → ${isMallDoc(pick) ? "쇼핑몰" : "일반"} ${pick.display_sitename || ""} ${img.slice(0, 90)}`);
+      if (!img) { miss++; console.log(`[search] 없음 "${used}" (결과 ${docs.length}건)`); continue; }
+      console.log(`[search] "${used}" → ${isMallDoc(pick) ? "쇼핑몰" : "일반"} ${pick.display_sitename || ""} ${img.slice(0, 90)}`);
       items.push({ title: d.title, link: d.link, source: d.source || "", img, imgOnly: true, imgFrom: "search" });
     } catch (e) { miss++; }
     await new Promise((r) => setTimeout(r, 200));
