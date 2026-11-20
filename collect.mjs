@@ -248,9 +248,10 @@ async function searchFill(already) {
   console.log(`[search] 대상 ${targets.length}건, 호출 ${calls}회, 이미지 ${items.length}건, 못 찾음 ${miss}건`);
   return items;
 }
+// 워커는 한 번에 앞 100건만 받으므로(cleanIngestItem slice) 썸네일 항목을 맨 앞에 둔다 — 뒤에 붙이면 RSS 글에 밀려 잘림(2026-11-20 확인)
 const filled = await thumbFill();
-all.push(...filled);
-all.push(...(await searchFill(new Set(filled.map((x) => x.link)))));
+const searched = await searchFill(new Set(filled.map((x) => x.link)));
+all.unshift(...filled, ...searched);
 
 if (process.env.DRY_RUN) {
   if (process.env.FEEDS_OUT) (await import("node:fs")).writeFileSync(process.env.FEEDS_OUT, JSON.stringify(perFeed));
